@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wechat</title>
+</head>
+<body>
+<h1>Web聊天室：<span id="tips"></span></h1>
+<div class="form">
+    <input id="txt" type="text" placeholder="请输入文字">
+    <input id="btn" type="button" value="发送" onclick="sendMessage();">
+</div>
+<div id="content">
+    <!--返回内容将在这里显示  -->
+</div>
+
+<script src="{% static 'js/jquery-3.4.1.js' %}"></script>
+<script>
+    <!-- 注意在全局定义了ws,在函数内部就不要再定义，因为var有bug，会修改全局变量，一旦某个函数内部又重新定义了ws会导致其它函数批不到ws-->
+    var ws;
+
+    $(function () {
+        // 页面加载时执行初始化
+        initWebSocket();
+    });
+
+    function initWebSocket() {
+        ws = new WebSocket("ws://127.0.0.1:8000/chat/");
+
+        // 如果服务端给我发了一条消息，onopen对应的函数就会被执行
+        ws.onopen = function () {
+            // 握手(连接)成功也会执行
+            $('#tips').text('连接成功');
+        };
+        // 收到消息时触发
+        ws.onmessage = function (arg) {
+            let content = $("#content");
+            let my_msg = '我:' + $("#txt").val();
+            let tag = document.createElement('div');
+            tag.innerHTML = arg.data;
+            content.append(my_msg);
+            content.append(tag);
+        };
+        // 当服务端关闭连接是， onclose会被触发
+        ws.onclose = function () {
+            ws.close();
+        }
+    }
+    // 点击时触发发送消息，用send
+    function sendMessage() {
+        ws.send($('#txt').val());
+    }
+</script>
+</body>
+</html>
