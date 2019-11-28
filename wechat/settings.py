@@ -120,3 +120,22 @@ STATICFILES_DIRS = [
 
 # TODO 要点1
 ASGI_APPLICATION = "wechat.routing.application"
+
+# TODO 要点2
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
+
+"""
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('10.211.55.25', 6379)]
+        },
+    },
+}
+"""
