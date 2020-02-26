@@ -24,7 +24,7 @@ class ChatConsumer(WebsocketConsumer):
         #     self.send(text_data='后台：收到了你的消息%s' % message['text'])
         # 给一群所有人发信息
         async_to_sync(self.channel_layer.group_send)('111', {
-            'type': 'callback_func',  # 类似回调函数，通过下面的callback_fun发
+            'type': 'callback.func',  # 类似回调函数，通过下面的callback_fun, 这里应该是用点，在channels内部会将点换成下划线
             'message': message['text']
         })
 
